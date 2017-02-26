@@ -1,10 +1,11 @@
 #pragma once
-
-#include <iosfwd>
+#include <memory>
+#include <cstdio>
+#include <vector>
 
 namespace mtr
 {
-	typedef unsigned char u8;
+	typedef char u8;
 	typedef unsigned short int u16;
 	typedef unsigned int u32;
 
@@ -13,60 +14,106 @@ namespace mtr
 	typedef int i32;
 
 	typedef float f;
-}
 
-namespace mtr::DataTypes
-{
-	#define	MAGIC_NUMBER (u16)0x4d2f;
-
-	struct SHeader
+	namespace DataTypes
 	{
-		u16 MagicNumber;
-		u16 CountImports;
-		u32 CountFunctions;
-		u32 CountVarBytes;
-		u32 CountVarWords;
-		u32 CountVarQWords;
-		u32 CountVarCustoms;
-
-		static SHeader* read(std::istream &stream);
-	};
-
-	struct SFileStructure
-	{
-		SHeader* Head;
-		SImportStructure** ArrImports;
-		SFunctionStructure** ArrFunctions;
-		u8* ArrValues;
-		STypeStructure** ArrCustomValues;
-
-		static SFileStructure* read(std::istream &stream);
-	};
+		#define	MAGIC_NUMBER (u16)0x4d2f;
 
 
-	struct SImportStructure
-	{
-		u32 NameLength;
-		u16 Index;
-		i8* Name;
+		class SHeader
+		{
+		public:
+			u16 MagicNumber;
+			u16 CountImports;
+			u32 CountFunctions;
+			u32 CountVarBytes;
+			u32 CountVarWords;
+			u32 CountVarQWords;
+			u32 CountVarCustoms;
 
-		static SImportStructure* read(std::istream &stream);
-	};
+			size_t allValuesSize() const;
+
+			static std::shared_ptr<SHeader> read(FILE *file);
+			static void write(FILE *file, std::shared_ptr<SHeader> hdr);
+		};
 
 
-	struct SFunctionStructure
-	{
-		u32 BytecodeLength;
-		i8* Bytecode;
 
-		static SFunctionStructure* read(std::istream &stream);
-	};
 
-	struct STypeStructure
-	{
-		u8 Length;
-		u8* Array;
+		class SImportStructure
+		{
+		public:
+			u8 NameLength;
+			u16 Index;
+			std::shared_ptr<i8> Name;
 
-		static STypeStructure* read(std::istream &stream);
-	};
+			static std::shared_ptr<SImportStructure> read(FILE *file);
+			static void write(FILE *file, std::shared_ptr<SImportStructure> data);
+
+		};
+
+
+
+
+
+		class SFunctionStructure
+		{
+		public:
+			u32 BytecodeLength;
+			std::shared_ptr<u8> Bytecode;
+
+			static std::shared_ptr<SFunctionStructure> read(FILE *file);
+			static void write(FILE *file, std::shared_ptr<SFunctionStructure> data);
+		};
+
+
+
+
+		class STypeStructure
+		{
+		public:
+			u8 Length;
+			std::shared_ptr<u8> Array;
+
+			static std::shared_ptr<STypeStructure> read(FILE *file);
+			static void write(FILE *file, std::shared_ptr<STypeStructure> data);
+		};
+
+
+
+
+		class SFileStructure
+		{
+		public:
+			std::shared_ptr<SHeader> Head;
+			std::vector<std::shared_ptr<SImportStructure>> ArrImports;
+			std::vector<std::shared_ptr<SFunctionStructure>> ArrFunctions;
+			std::shared_ptr<u8> ArrValues;
+			std::vector<std::shared_ptr<STypeStructure>> ArrCustomValues;
+
+			SFileStructure(std::shared_ptr<SHeader> header);
+
+			u8 byteValue(u32 index) const;
+			void byteValue(u32 index, u8 newValue);
+
+			u16 wordValue(u32 index) const;
+			void wordValue(u32 index, u16 newValue);
+
+			u32 qwordValue(u32 index) const;
+			void qwordValue(u32 index, u32 newValue);
+
+			static std::shared_ptr<SFileStructure> read(FILE *file);
+			static std::shared_ptr<SFileStructure> read(const char *file_name);
+			static void write(FILE *file, std::shared_ptr<SFileStructure> data);
+
+		};
+
+		class DataHelper
+		{
+		public:
+			static bool read_8(void* data, FILE *file);
+			static bool read_16(void *data, FILE* file);
+			static bool read_32(void *data, FILE* file);
+		};
+	}
 }
