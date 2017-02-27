@@ -120,8 +120,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\DataStructures.h" />
+    <ClInclude Include="include\ICommand.h" />
+    <ClInclude Include="include\ModuleLoader.h" />
+    <ClInclude Include="include\VMachine.h" />
+    <ClInclude Include="include\VMemory.h" />
+    <ClInclude Include="include\VModule.h" />
+    <ClInclude Include="include\VStack.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\VStack.cpp" />
+    <ClCompile Include="src\VMemory.cpp" />
+    <ClCompile Include="src\VModule.cpp" />
+    <ClCompile Include="src\VMachine.cpp" />
     <ClCompile Include="src\DataStructures.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
