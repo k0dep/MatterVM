@@ -1,52 +1,53 @@
+#include <stdexcept>
+
 #include "VMachine.h"
 #include "ModuleLoader.h"
-#include "VModule.h"
-#include <stdexcept>
+#include "VModuleBase.h"
+#include "SCommandList.h"
+
 using namespace mtr;
+using namespace std;
 
-mtr::VMachine::VMachine()
+void mtr::VMachine::init(std::shared_ptr<VModuleBase> module)
 {
-}
+	for each (auto item in SCommandList::command_list)
+		register_command(item);
 
-mtr::VMachine::~VMachine()
-{
-}
-
-void mtr::VMachine::init(std::shared_ptr<VModule> module)
-{
+	_stoped = false;
 	_current_module = module;
 	
-	_bytecode_call_stack = std::stack<std::shared_ptr<u8>>();
-	_ip_call_stack = std::stack<u32>();
-	_module_call_stack = std::stack<u16>();
-	_function_call_stack = std::stack<u32>();
+	_bytecode_call_stack = stack<shared_ptr<u8>>();
+	_ip_call_stack = stack<u32>();
+	_module_call_stack = stack<u16>();
+	_function_call_stack = stack<u32>();
 
 	_current_module_id = 0;
 	_current_function_id = 0;
 	_ip = 0;
 
-	_operands = std::vector<u8>();
+	_operands = stack<u8>();
 
 	load_recursive_modules(module);
 	init(module, 0);
 }
 
-void mtr::VMachine::init(std::shared_ptr<VModule> module, u16 index)
+void VMachine::init(shared_ptr<VModuleBase> module, u16 index)
 {
 	if (_module_map.find(index) != _module_map.end()) return;
 
 	auto required = module->require_modules();
-	std::map<u16, u16> map_to_module;
+	map<u16, u16> map_to_module;
 
-	for each (auto var in required)
+	for each (auto item in required)
 	{
-		init(ModuleLoader::load_moodule(var.first), _module_name_map[var.first]);
-		map_to_module[var.second] = _module_name_map[var.first];
+		init(ModuleLoader::load_moodule(string(item.first)), _module_name_map[item.first]);
+		map_to_module[item.second] = _module_name_map[item.first];
+
 	}
 	_module_map[index] = map_to_module;
 }
 
-void mtr::VMachine::load_recursive_modules(std::shared_ptr<VModule> module)
+void VMachine::load_recursive_modules(shared_ptr<VModuleBase> module)
 {
 	if (_module_name_map.find(module->get_name()) == _module_name_map.end())
 		return;
@@ -55,29 +56,43 @@ void mtr::VMachine::load_recursive_modules(std::shared_ptr<VModule> module)
 	_modules.push_back(module);
 
 	auto required = module->require_modules();
-
-	for each (auto var in required)	
-		load_recursive_modules(ModuleLoader::load_moodule(var.first));
+	for each (auto item in required)
+		load_recursive_modules(ModuleLoader::load_moodule(item.first));
 }
 
-void mtr::VMachine::steep()
+u8 VMachine::_keep_byte_by_ip()
 {
+	return (_bytecode.get())[_ip++];
 }
 
-void mtr::VMachine::run(u32 function)
+void VMachine::steep()
 {
+	auto icode = _keep_byte_by_ip();
+	_operands = stack<u8>();
+	auto concrete_cmd = _commands[icode];
+	for (u8 i = 0; i < concrete_cmd->operand_count(); i++)
+		_operands.push(_keep_byte_by_ip());
+	concrete_cmd->execute(this);
 }
 
-void mtr::VMachine::register_command(std::shared_ptr<ICommand> cmd)
+void VMachine::run(u32 function)
+{
+	while (_stoped)
+	{
+		steep();
+	}
+}
+
+void VMachine::register_command(shared_ptr<ICommand> cmd)
 {
 	auto isExist = _commands.find(cmd->code());
 	if (isExist == _commands.end())
-		throw std::invalid_argument("command alredy registred");
+		throw invalid_argument("command alredy registred");
 
 	_commands[cmd->code()] = cmd;
 }
 
-void mtr::VMachine::call_function(u16 module, u32 function)
+void VMachine::call_function(u16 module, u32 function)
 {
 	_bytecode_call_stack.push(_bytecode);
 	_ip_call_stack.push(_ip);
@@ -86,16 +101,28 @@ void mtr::VMachine::call_function(u16 module, u32 function)
 
 	_current_module = _modules[module];
 	_current_function_id = function;
+	_ip = 0;
 
-	auto called_func = _current_module->get_function(function);
-	_bytecode = called_func.first;
-	((_current_module.get())->*(called_func.second))(this);
+	_bytecode = _current_module->get_function(function, this);
 }
 
-void mtr::VMachine::ret_function()
+void VMachine::ret_function()
 {
+	_ip = _ip_call_stack.top();
+	_ip_call_stack.pop();
+
+	_current_module_id = _module_call_stack.top();
+	_module_call_stack.pop();
+	_current_module = _modules[_current_function_id];	
+
+	_current_function_id = _function_call_stack.top();
+	_function_call_stack.pop();
+
+	_bytecode = _bytecode_call_stack.top();
+	_bytecode_call_stack.pop();
 }
 
-void mtr::VMachine::do_goto(u32 addr)
+void VMachine::do_goto(u32 addr)
 {
+	_ip = addr;
 }

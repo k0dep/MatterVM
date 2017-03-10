@@ -1,20 +1,27 @@
 #pragma once
 
+#ifndef _MODULELOADER_H_
+#define _MODULELOADER_H_
+
+
 #include <string>
 #include <memory>
 #include <map>
 #include <vector>
 
+#include "VModuleBase.h"
+
 namespace mtr
 {
-	class VModule;
-	
 	class ModuleLoader
 	{
 	public:
-		static std::shared_ptr<VModule> load_moodule(std::string name);
+		static std::string path;
+		static std::shared_ptr<VModuleBase> load_moodule(std::string name);
 
 	protected:
-		static std::map<std::string, std::shared_ptr<VModule>> _cache;
+		static std::map<std::string, std::shared_ptr<VModuleBase>> _cache;
 	};
 }
+
+#endif // !_MODULELOADER_H_

@@ -1,6 +1,11 @@
 #pragma once
+
+#ifndef _DATASTRUCTURES_H_
+#define _DATASTRUCTURES_H_
+
 #include <memory>
 #include <cstdio>
+#include <stack>
 #include <vector>
 
 namespace mtr
@@ -114,6 +119,12 @@ namespace mtr
 			static bool read_8(void* data, FILE *file);
 			static bool read_16(void *data, FILE* file);
 			static bool read_32(void *data, FILE* file);
+
+			static u16 make_16(std::stack<u8> &stack);
+			static u32 make_32(std::stack<u8> &stack);
+			static f make_f(std::stack<u8> &stack);
 		};
 	}
 }
+
+#endif

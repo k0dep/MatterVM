@@ -10,11 +10,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MatterVMTest", "..\MatterVM
 		{401DB502-AB46-4552-8176-309B5BEC8B6A} = {401DB502-AB46-4552-8176-309B5BEC8B6A}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Проект1", "..\Проект1\Проект1.vcxproj", "{D9C62C23-425C-4E2D-B570-C7C623CA5E83}"
-	ProjectSection(ProjectDependencies) = postProject
-		{401DB502-AB46-4552-8176-309B5BEC8B6A} = {401DB502-AB46-4552-8176-309B5BEC8B6A}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -39,14 +34,6 @@ Global
 		{00DE90C1-92E1-4819-A357-D51C0F55A6F8}.Release|x64.Build.0 = Release|x64
 		{00DE90C1-92E1-4819-A357-D51C0F55A6F8}.Release|x86.ActiveCfg = Release|Win32
 		{00DE90C1-92E1-4819-A357-D51C0F55A6F8}.Release|x86.Build.0 = Release|Win32
-		{D9C62C23-425C-4E2D-B570-C7C623CA5E83}.Debug|x64.ActiveCfg = Debug|x64
-		{D9C62C23-425C-4E2D-B570-C7C623CA5E83}.Debug|x64.Build.0 = Debug|x64
-		{D9C62C23-425C-4E2D-B570-C7C623CA5E83}.Debug|x86.ActiveCfg = Debug|Win32
-		{D9C62C23-425C-4E2D-B570-C7C623CA5E83}.Debug|x86.Build.0 = Debug|Win32
-		{D9C62C23-425C-4E2D-B570-C7C623CA5E83}.Release|x64.ActiveCfg = Release|x64
-		{D9C62C23-425C-4E2D-B570-C7C623CA5E83}.Release|x64.Build.0 = Release|x64
-		{D9C62C23-425C-4E2D-B570-C7C623CA5E83}.Release|x86.ActiveCfg = Release|Win32
-		{D9C62C23-425C-4E2D-B570-C7C623CA5E83}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

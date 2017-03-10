@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef _VSTACK_H_
+#define _VSTACK_H_
+
 #include <stack>
 #include "DataStructures.h"
 
@@ -23,3 +26,5 @@ namespace mtr
 		std::stack<u8> _stack;
 	};
 }
+
+#endif // !_VSTACK_H_

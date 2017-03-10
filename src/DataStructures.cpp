@@ -228,3 +228,60 @@ bool mtr::DataTypes::DataHelper::read_32(void * data, FILE * file)
 	((u8*)data)[3] = t0;
 	return res;
 }
+
+u16 mtr::DataTypes::DataHelper::make_16(std::stack<u8> &stack)
+{
+	u16 res = 0;
+
+	res |= stack.top();
+	stack.pop();
+	res = res << 8;
+	res |= stack.top();
+	stack.pop();
+
+	return res;
+}
+
+u32 mtr::DataTypes::DataHelper::make_32(std::stack<u8> &stack)
+{
+	u32 res = 0;
+
+	res |= stack.top();
+	stack.pop();
+	res = res << 8;
+
+	res |= stack.top();
+	stack.pop();
+	res = res << 8;
+
+	res |= stack.top();
+	stack.pop();
+	res = res << 8;
+
+	res |= stack.top();
+	stack.pop();
+
+	return res;
+}
+
+f mtr::DataTypes::DataHelper::make_f(std::stack<u8> &stack)
+{
+	f res;
+	u8 b0, b1, b2, b3;
+	
+	b0 = stack.top();
+	stack.pop();
+
+	b1 = stack.top();
+	stack.pop();
+
+	b2 = stack.top();
+	stack.pop();
+
+	b3 = stack.top();
+	stack.pop();
+
+	u8 buf[] = { b0, b1, b2, b3 };
+	memcpy(&res, buf, sizeof(res));
+	return res;
+}

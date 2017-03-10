@@ -1,5 +1,8 @@
 #pragma once
 
+#ifndef _VMEMORY_H_
+#define _VMEMORY_H_
+
 #include <memory>
 #include "DataStructures.h"
 
@@ -28,3 +31,5 @@ namespace mtr
 	};
 
 }
+
+#endif // !_VMEMORY_H_

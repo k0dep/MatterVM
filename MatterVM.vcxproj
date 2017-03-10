@@ -119,18 +119,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Commands.h" />
+    <ClInclude Include="include\IModule.h" />
+    <ClInclude Include="include\SCommandList.h" />
     <ClInclude Include="include\DataStructures.h" />
     <ClInclude Include="include\ICommand.h" />
     <ClInclude Include="include\ModuleLoader.h" />
     <ClInclude Include="include\VMachine.h" />
     <ClInclude Include="include\VMemory.h" />
-    <ClInclude Include="include\VModule.h" />
+    <ClInclude Include="include\VModuleBase.h" />
+    <ClInclude Include="include\VModuleBytecode.h" />
+    <ClInclude Include="include\VModuleNative.h" />
     <ClInclude Include="include\VStack.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Commands.cpp" />
+    <ClCompile Include="src\VModuleBytecode.cpp" />
+    <ClCompile Include="src\VModuleNative.cpp" />
+    <ClCompile Include="src\ModuleLoader.cpp" />
+    <ClCompile Include="src\SCommandList.cpp" />
     <ClCompile Include="src\VStack.cpp" />
     <ClCompile Include="src\VMemory.cpp" />
-    <ClCompile Include="src\VModule.cpp" />
+    <ClCompile Include="src\VModuleBase.cpp" />
     <ClCompile Include="src\VMachine.cpp" />
     <ClCompile Include="src\DataStructures.cpp" />
     <ClCompile Include="src\main.cpp" />
