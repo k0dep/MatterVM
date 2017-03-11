@@ -8,6 +8,9 @@
 using namespace mtr;
 using namespace std;
 
+string ModuleLoader::path = "";
+map<string, shared_ptr<VModuleBase>> ModuleLoader::_cache = map<string, shared_ptr<VModuleBase>>();
+
 std::shared_ptr<VModuleBase> mtr::ModuleLoader::load_moodule(std::string name)
 {
 	if (_cache.find(name) != _cache.end())

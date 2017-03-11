@@ -8,7 +8,17 @@
 using namespace mtr;
 using namespace std;
 
-void mtr::VMachine::init(std::shared_ptr<VModuleBase> module)
+shared_ptr<u8> VMachine::ret_bytecode = shared_ptr<u8>(new u8[1]{ CMD_RET });
+
+mtr::VMachine::VMachine()
+{
+}
+
+mtr::VMachine::~VMachine()
+{
+}
+
+void VMachine::init(std::shared_ptr<VModuleBase> module)
 {
 	for each (auto item in SCommandList::command_list)
 		register_command(item);
@@ -49,7 +59,7 @@ void VMachine::init(shared_ptr<VModuleBase> module, u16 index)
 
 void VMachine::load_recursive_modules(shared_ptr<VModuleBase> module)
 {
-	if (_module_name_map.find(module->get_name()) == _module_name_map.end())
+	if (_module_name_map.find(module->get_name()) != _module_name_map.end())
 		return;
 
 	_module_name_map[module->get_name()] = (u16)_modules.size();
@@ -70,8 +80,14 @@ void VMachine::steep()
 	auto icode = _keep_byte_by_ip();
 	_operands = stack<u8>();
 	auto concrete_cmd = _commands[icode];
+	stack<u8> ops;
 	for (u8 i = 0; i < concrete_cmd->operand_count(); i++)
-		_operands.push(_keep_byte_by_ip());
+		ops.push(_keep_byte_by_ip());
+	while (ops.size() > 0)
+	{
+		_operands.push(ops.top());
+		ops.pop();
+	}
 	concrete_cmd->execute(this);
 }
 

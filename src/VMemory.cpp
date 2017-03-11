@@ -1,6 +1,10 @@
 #include <mtr/VMemory.h>
 using namespace mtr;
 
+mtr::VMemory::VMemory()
+{
+}
+
 bool mtr::VMemory::init(std::shared_ptr<DataTypes::SFileStructure> file)
 {
 	_file = file;

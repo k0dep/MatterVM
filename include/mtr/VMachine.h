@@ -23,14 +23,12 @@ namespace mtr
 		VMachine();
 		~VMachine();
 
+		static std::shared_ptr<u8> ret_bytecode;
+
 		void init(std::shared_ptr<VModuleBase> main_module);
 		void steep();
 		void run(u32 function);
 
-	public:
-		static std::shared_ptr<u8> ret_bytecode;
-
-		void init(std::shared_ptr<VModuleBase> main_module, u16 index);
 		void register_command(std::shared_ptr<ICommand> cmd);
 
 		void call_function(u16 module, u32 function);
@@ -63,6 +61,9 @@ namespace mtr
 		u8 _keep_byte_by_ip();
 
 		bool _stoped;
+
+	protected:
+		void init(std::shared_ptr<VModuleBase> main_module, u16 index);
 	};
 }
 

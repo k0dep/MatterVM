@@ -18,11 +18,19 @@ VModuleBytecode::VModuleBytecode(shared_ptr<SFileStructure> data, std::string na
 		string rname = string(item->Name.get(), item->NameLength);
 		_required_modules.push_back(pair<string, u16>(rname, item->Index));
 	}
+
+	_memory = shared_ptr<VMemory>(new VMemory());
+	_memory->init(data);
 }
 
 u32 VModuleBytecode::function_count() const
 {
 	return _data->Head->CountFunctions;
+}
+
+std::string mtr::VModuleBytecode::get_name() const
+{
+	return VModuleBase::get_name();
 }
 
 shared_ptr<u8> VModuleBytecode::get_function(u32 index, VMachine * machine) const

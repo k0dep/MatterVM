@@ -18,15 +18,13 @@ namespace mtr {
 #   define MODULEAPI   __declspec(dllimport)
 #endif
 
-#ifndef APIENTRY
-#define APIENTRY __stdcall
-#endif // !APIENTRY
+#define API_MTR _cdecl
 
-		extern "C" MODULEAPI void APIENTRY execute_func(u32 function_id, VMachine * machine);
-		extern "C" MODULEAPI u32 APIENTRY function_count();
+		extern "C" MODULEAPI void API_MTR execute_func(u32 function_id, VMachine * machine);
+		extern "C" MODULEAPI u32 API_MTR function_count();
 
-		typedef void (APIENTRY *ExecuteFuncPtr)(u32, VMachine*);
-		typedef u32 (APIENTRY *FuncCountPtr)();
+		typedef void (API_MTR *ExecuteFuncPtr)(u32, VMachine*);
+		typedef u32 (API_MTR *FuncCountPtr)();
 	}
 }
 
