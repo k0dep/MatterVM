@@ -6,10 +6,10 @@
 #include <stack>
 #include <memory>
 #include <map>
-#include "DataStructures.h"
-#include "ICommand.h"
-#include "VModuleBase.h"
-#include "VStack.h"
+#include <mtr/DataStructures.h>
+#include <mtr/ICommand.h>
+#include <mtr/VModuleBase.h>
+#include <mtr/VStack.h>
 
 namespace mtr
 {

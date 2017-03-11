@@ -6,7 +6,7 @@
 
 #include <vector>
 #include <memory>
-#include "ICommand.h"
+#include <mtr/ICommand.h>
 
 namespace mtr
 {

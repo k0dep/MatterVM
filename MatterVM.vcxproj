@@ -71,10 +71,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)build\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)obj\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -119,18 +121,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\Commands.h" />
-    <ClInclude Include="include\IModule.h" />
-    <ClInclude Include="include\SCommandList.h" />
-    <ClInclude Include="include\DataStructures.h" />
-    <ClInclude Include="include\ICommand.h" />
-    <ClInclude Include="include\ModuleLoader.h" />
-    <ClInclude Include="include\VMachine.h" />
-    <ClInclude Include="include\VMemory.h" />
-    <ClInclude Include="include\VModuleBase.h" />
-    <ClInclude Include="include\VModuleBytecode.h" />
-    <ClInclude Include="include\VModuleNative.h" />
-    <ClInclude Include="include\VStack.h" />
+    <ClInclude Include="include\mtr\Commands.h" />
+    <ClInclude Include="include\mtr\IModule.h" />
+    <ClInclude Include="include\mtr\SCommandList.h" />
+    <ClInclude Include="include\mtr\DataStructures.h" />
+    <ClInclude Include="include\mtr\ICommand.h" />
+    <ClInclude Include="include\mtr\ModuleLoader.h" />
+    <ClInclude Include="include\mtr\VMachine.h" />
+    <ClInclude Include="include\mtr\VMemory.h" />
+    <ClInclude Include="include\mtr\VModuleBase.h" />
+    <ClInclude Include="include\mtr\VModuleBytecode.h" />
+    <ClInclude Include="include\mtr\VModuleNative.h" />
+    <ClInclude Include="include\mtr\VStack.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Commands.cpp" />

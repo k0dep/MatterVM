@@ -1,6 +1,6 @@
-#include "VMachine.h"
-#include "VModuleBytecode.h"
 #include <string.h>
+#include <mtr/VMachine.h>
+#include <mtr/VModuleBytecode.h>
 
 using namespace mtr;
 using namespace mtr::DataTypes;

@@ -4,8 +4,9 @@
 #define _IMODULE_H_
 
 #include <map>
-#include "DataStructures.h"
-#include "VMachine.h"
+
+#include <mtr/DataStructures.h>
+#include <mtr/VMachine.h>
 
 namespace mtr {
 	namespace Modules

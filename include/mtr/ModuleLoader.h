@@ -9,7 +9,7 @@
 #include <map>
 #include <vector>
 
-#include "VModuleBase.h"
+#include <mtr/VModuleBase.h>
 
 namespace mtr
 {

@@ -2,7 +2,7 @@
 
 #ifndef _COMMANDS_H_
 
-#include "VMachine.h"
+#include <mtr/VMachine.h>
 
 namespace mtr
 {

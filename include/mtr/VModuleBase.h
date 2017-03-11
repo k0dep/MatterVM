@@ -3,9 +3,9 @@
 #ifndef _VMODULE_BASE_H_
 #define _VMODULE_BASE_H_
 
-#include "VMachine.h"
-#include "VMemory.h"
-#include "VModuleBase.h"
+#include <mtr/VMachine.h>
+#include <mtr/VMemory.h>
+#include <mtr/VModuleBase.h>
 
 namespace mtr
 {

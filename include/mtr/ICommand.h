@@ -3,7 +3,7 @@
 #ifndef _ICOMMAND_H_
 #define _ICOMMAND_H_
 
-#include "VMachine.h"
+#include <mtr/VMachine.h>
 
 namespace mtr
 {

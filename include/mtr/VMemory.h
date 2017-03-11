@@ -4,7 +4,7 @@
 #define _VMEMORY_H_
 
 #include <memory>
-#include "DataStructures.h"
+#include <mtr/DataStructures.h>
 
 namespace mtr
 {

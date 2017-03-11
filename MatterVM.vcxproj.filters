@@ -15,40 +15,40 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\DataStructures.h">
+    <ClInclude Include="include\mtr\Commands.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\VMachine.h">
+    <ClInclude Include="include\mtr\DataStructures.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\VStack.h">
+    <ClInclude Include="include\mtr\ICommand.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\ICommand.h">
+    <ClInclude Include="include\mtr\IModule.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\VMemory.h">
+    <ClInclude Include="include\mtr\ModuleLoader.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\ModuleLoader.h">
+    <ClInclude Include="include\mtr\SCommandList.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\SCommandList.h">
+    <ClInclude Include="include\mtr\VMachine.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\IModule.h">
+    <ClInclude Include="include\mtr\VMemory.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\VModuleBase.h">
+    <ClInclude Include="include\mtr\VModuleBase.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\VModuleNative.h">
+    <ClInclude Include="include\mtr\VModuleBytecode.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\VModuleBytecode.h">
+    <ClInclude Include="include\mtr\VModuleNative.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\Commands.h">
+    <ClInclude Include="include\mtr\VStack.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

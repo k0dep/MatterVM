@@ -1,5 +1,5 @@
-#include "DataStructures.h"
 #include <stdexcept>
+#include <mtr/DataStructures.h>
 
 using namespace mtr;
 using namespace mtr::DataTypes;

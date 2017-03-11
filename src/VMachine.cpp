@@ -1,9 +1,9 @@
 #include <stdexcept>
 
-#include "VMachine.h"
-#include "ModuleLoader.h"
-#include "VModuleBase.h"
-#include "SCommandList.h"
+#include <mtr/VMachine.h>
+#include <mtr/ModuleLoader.h>
+#include <mtr/VModuleBase.h>
+#include <mtr/SCommandList.h>
 
 using namespace mtr;
 using namespace std;

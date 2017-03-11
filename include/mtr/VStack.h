@@ -4,7 +4,7 @@
 #define _VSTACK_H_
 
 #include <stack>
-#include "DataStructures.h"
+#include <mtr/DataStructures.h>
 
 namespace mtr
 {
