@@ -148,25 +148,39 @@ IMPL_CMD(FTOI, 0)
 
 
 
+IMPL_CMD_ARIFM_PACK(ADD, +)
+IMPL_CMD_ARIFM_PACK(SUB, -)
+IMPL_CMD_ARIFM_PACK(MUL, *)
+IMPL_CMD_ARIFM_PACK(DIV, /)
 
-
-
-IMPL_CMD(ADD, 0)
+IMPL_CMD(MOD, 0)
 {
 	auto a = vm->_stack.pop_32();
 	auto b = vm->_stack.pop_32();
-	vm->_stack.push(a + b);
+	auto res = a % b;
+	vm->_stack.push(res);
 	return true;
 }
 
-IMPL_CMD(ADDF, 0)
+IMPL_CMD(SHIFT, 0)
 {
-	auto a_u = vm->_stack.pop_32();
-	auto b_u = vm->_stack.pop_32();
+	auto shiftu = vm->_stack.pop_32();
+	auto shift = reinterpret_cast<i32&>(shiftu);
+	auto value = vm->_stack.pop_32();
+	auto res = value >> shift;
+	if (shift < 0)
+		res = value << abs(shift);
+	vm->_stack.push(res);
+	return true;
+}
 
-	auto a = reinterpret_cast<float&>(a_u);
-	auto b = reinterpret_cast<float&>(b_u);
-	auto res = a + b;
-	vm->_stack.push(reinterpret_cast<u32&>(res));
+IMPL_CMD_ARIFM(AND, &)
+IMPL_CMD_ARIFM(OR, |)
+IMPL_CMD_ARIFM(XOR, ^)
+
+IMPL_CMD(NOT, 0)
+{
+	auto value = vm->_stack.pop_32();
+	vm->_stack.push(~value);
 	return true;
 }
