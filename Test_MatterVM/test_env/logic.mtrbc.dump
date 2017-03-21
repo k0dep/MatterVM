@@ -1,0 +1,31 @@
+[header] MN:19757; I:0; F:6; B:0; W:0; DW:6; C:0
+[function] BCL:7
+DUMP:
+ 12 00 00 00 00 11 02
+[function] BCL:12
+DUMP:
+ 12 00 00 00 01 12 00 00
+ 00 02 0d 02
+[function] BCL:12
+DUMP:
+ 12 00 00 00 01 12 00 00
+ 00 03 0d 02
+[function] BCL:12
+DUMP:
+ 12 00 00 00 04 12 00 00
+ 00 05 0e 02
+[function] BCL:12
+DUMP:
+ 12 00 00 00 04 12 00 00
+ 00 05 0f 02
+[function] BCL:12
+DUMP:
+ 12 00 00 00 04 12 00 00
+ 00 05 10 02
+[values] DUMP:
+ ff ff ff ff
+ fa 00 00 00
+ 00 00 00 18
+ ff ff ff fc
+ ff ab 00 00
+ 00 0b 0c af

@@ -1,0 +1,10 @@
+[header] MN:19757; I:0; F:2; B:0; W:0; DW:2; C:0
+[function] BCL:7
+DUMP:
+ 12 00 00 00 00 1c 02
+[function] BCL:7
+DUMP:
+ 12 00 00 00 01 1d 02
+[values] DUMP:
+ 00 00 00 0c
+ c0 63 d7 0a

@@ -3,7 +3,7 @@
 #include <mtr/VMachine.h>
 #include <mtr/ModuleLoader.h>
 #include <mtr/VModuleBase.h>
-#include <mtr/SCommandList.h>
+#include <mtr/Commands.h>
 
 using namespace mtr;
 using namespace std;
@@ -12,6 +12,7 @@ shared_ptr<u8> VMachine::ret_bytecode = shared_ptr<u8>(new u8[1]{ CMD_RET });
 
 mtr::VMachine::VMachine()
 {
+	ICommand::init();
 }
 
 mtr::VMachine::~VMachine()
@@ -20,28 +21,16 @@ mtr::VMachine::~VMachine()
 
 void VMachine::init(std::shared_ptr<VModuleBase> module)
 {
-	for each (auto item in SCommandList::command_list)
+	for each (auto item in ICommand::global_commands)
 		register_command(item);
 
-	_stoped = false;
-	_current_module = module;
-	
-	_bytecode_call_stack = stack<shared_ptr<u8>>();
-	_ip_call_stack = stack<u32>();
-	_module_call_stack = stack<u16>();
-	_function_call_stack = stack<u32>();
-
-	_current_module_id = 0;
-	_current_function_id = 0;
-	_ip = 0;
-
-	_operands = stack<u8>();
+	__main_module = module;
 
 	load_recursive_modules(module);
-	init(module, 0);
+	_init(module, 0);
 }
 
-void VMachine::init(shared_ptr<VModuleBase> module, u16 index)
+void VMachine::_init(shared_ptr<VModuleBase> module, u16 index)
 {
 	if (_module_map.find(index) != _module_map.end()) return;
 
@@ -50,7 +39,7 @@ void VMachine::init(shared_ptr<VModuleBase> module, u16 index)
 
 	for each (auto item in required)
 	{
-		init(ModuleLoader::load_moodule(string(item.first)), _module_name_map[item.first]);
+		_init(ModuleLoader::load_moodule(string(item.first)), _module_name_map[item.first]);
 		map_to_module[item.second] = _module_name_map[item.first];
 
 	}
@@ -72,20 +61,20 @@ void VMachine::load_recursive_modules(shared_ptr<VModuleBase> module)
 
 u8 VMachine::_keep_byte_by_ip()
 {
-	return (_bytecode.get())[_ip++];
+	return (_bytecode.get())[ip++];
 }
 
 void VMachine::steep()
 {
 	auto icode = _keep_byte_by_ip();
-	_operands = stack<u8>();
+	operands = std::stack<u8>();
 	auto concrete_cmd = _commands[icode];
-	stack<u8> ops;
+	std::stack<u8> ops;
 	for (u8 i = 0; i < concrete_cmd->operand_count(); i++)
 		ops.push(_keep_byte_by_ip());
 	while (ops.size() > 0)
 	{
-		_operands.push(ops.top());
+		operands.push(ops.top());
 		ops.pop();
 	}
 	concrete_cmd->execute(this);
@@ -93,7 +82,25 @@ void VMachine::steep()
 
 void VMachine::run(u32 function)
 {
-	while (_stoped)
+	_stoped = false;
+	current_module = __main_module;
+
+	_bytecode = current_module->get_function(function, this);
+
+	_bytecode_call_stack = std::stack<shared_ptr<u8>>();
+	_ip_call_stack = std::stack<u32>();
+	_module_call_stack = std::stack<u16>();
+	_function_call_stack = std::stack<u32>();
+
+	current_module_id = 0;
+	current_function_id = function;
+	ip = 0;
+
+	operands = std::stack<u8>();
+
+	stack = VStack();
+
+	while (!_stoped)
 	{
 		steep();
 	}
@@ -102,7 +109,7 @@ void VMachine::run(u32 function)
 void VMachine::register_command(shared_ptr<ICommand> cmd)
 {
 	auto isExist = _commands.find(cmd->code());
-	if (isExist == _commands.end())
+	if (isExist != _commands.end())
 		throw invalid_argument("command alredy registred");
 
 	_commands[cmd->code()] = cmd;
@@ -111,27 +118,34 @@ void VMachine::register_command(shared_ptr<ICommand> cmd)
 void VMachine::call_function(u16 module, u32 function)
 {
 	_bytecode_call_stack.push(_bytecode);
-	_ip_call_stack.push(_ip);
-	_module_call_stack.push(_current_module_id);
-	_function_call_stack.push(_current_function_id);
+	_ip_call_stack.push(ip);
+	_module_call_stack.push(current_module_id);
+	_function_call_stack.push(current_function_id);
 
-	_current_module = _modules[module];
-	_current_function_id = function;
-	_ip = 0;
+	current_module = _modules[module];
+	current_module_id = module;
+	current_function_id = function;
+	ip = 0;
 
-	_bytecode = _current_module->get_function(function, this);
+	_bytecode = current_module->get_function(function, this);
 }
 
 void VMachine::ret_function()
 {
-	_ip = _ip_call_stack.top();
+	if (_ip_call_stack.size() == 0)
+	{
+		_stoped = true;
+		return;
+	}
+
+	ip = _ip_call_stack.top();
 	_ip_call_stack.pop();
 
-	_current_module_id = _module_call_stack.top();
+	current_module_id = _module_call_stack.top();
 	_module_call_stack.pop();
-	_current_module = _modules[_current_function_id];	
+	current_module = _modules[current_module_id];
 
-	_current_function_id = _function_call_stack.top();
+	current_function_id = _function_call_stack.top();
 	_function_call_stack.pop();
 
 	_bytecode = _bytecode_call_stack.top();
@@ -140,5 +154,5 @@ void VMachine::ret_function()
 
 void VMachine::do_goto(u32 addr)
 {
-	_ip = addr;
+	ip = addr;
 }

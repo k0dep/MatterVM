@@ -24,7 +24,6 @@ namespace mtr
 	{
 		#define	MAGIC_NUMBER (u16)0x4d2f;
 
-
 		class SHeader
 		{
 		public:
@@ -37,6 +36,7 @@ namespace mtr
 			u32 CountVarCustoms;
 
 			size_t allValuesSize() const;
+			std::string str() const;
 
 			static std::shared_ptr<SHeader> read(FILE *file);
 			static void write(FILE *file, std::shared_ptr<SHeader> hdr);
@@ -51,6 +51,8 @@ namespace mtr
 			u8 NameLength;
 			u16 Index;
 			std::shared_ptr<i8> Name;
+
+			std::string str() const;
 
 			static std::shared_ptr<SImportStructure> read(FILE *file);
 			static void write(FILE *file, std::shared_ptr<SImportStructure> data);
@@ -67,6 +69,8 @@ namespace mtr
 			u32 BytecodeLength;
 			std::shared_ptr<u8> Bytecode;
 
+			std::string str() const;
+
 			static std::shared_ptr<SFunctionStructure> read(FILE *file);
 			static void write(FILE *file, std::shared_ptr<SFunctionStructure> data);
 		};
@@ -79,6 +83,8 @@ namespace mtr
 		public:
 			u8 Length;
 			std::shared_ptr<u8> Array;
+
+			std::string str() const;
 
 			static std::shared_ptr<STypeStructure> read(FILE *file);
 			static void write(FILE *file, std::shared_ptr<STypeStructure> data);
@@ -107,6 +113,8 @@ namespace mtr
 			u32 qwordValue(u32 index) const;
 			void qwordValue(u32 index, u32 newValue);
 
+			std::string str() const;
+
 			static std::shared_ptr<SFileStructure> read(FILE *file);
 			static std::shared_ptr<SFileStructure> read(const char *file_name);
 			static void write(FILE *file, std::shared_ptr<SFileStructure> data);
@@ -123,7 +131,13 @@ namespace mtr
 			static u16 make_16(std::stack<u8> &stack);
 			static u32 make_32(std::stack<u8> &stack);
 			static f make_f(std::stack<u8> &stack);
+
+			static f utof(u32 u);
+			static u8 byteFromFloat(float val, u8 byte_i);
 		};
+
+#define MAKE_ARR_DWORD(val) ((u8)((val)>>24)&0xFF), ((u8)((val)>>16)&0xFF), ((u8)((val)>>8)&0xFF), ((u8)(val)&0xFF)
+#define MAKE_ARR_F_DWORD(val) DataHelper::byteFromFloat(val, 3), DataHelper::byteFromFloat(val, 2), DataHelper::byteFromFloat(val, 1), DataHelper::byteFromFloat(val, 0)
 	}
 }
 

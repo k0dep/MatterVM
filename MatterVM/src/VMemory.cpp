@@ -38,5 +38,5 @@ u32 mtr::VMemory::qword(u32 index) const
 
 void mtr::VMemory::qword(u32 index, u8 new_val)
 {
-	_file->wordValue(index, new_val);
+	_file->qwordValue(index, new_val);
 }

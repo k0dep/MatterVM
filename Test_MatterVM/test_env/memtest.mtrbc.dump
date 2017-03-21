@@ -1,0 +1,7 @@
+[header] MN:19757; I:0; F:0; B:0; W:0; DW:5; C:0
+[values] DUMP:
+ 00 00 00 02
+ ff ff ff fc
+ 40 00 00 00
+ c0 80 00 00
+ aa bb cc dd

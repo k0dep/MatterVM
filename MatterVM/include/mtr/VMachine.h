@@ -35,10 +35,22 @@ namespace mtr
 		void ret_function();
 		void do_goto(u32 addr);
 
+
+		VStack stack;
+
+		u16 current_module_id;
+		u32 current_function_id;
+		u32 ip;
+
+		std::shared_ptr<VModuleBase> current_module;
+		std::stack<u8> operands;
+
+	protected:
 		void load_recursive_modules(std::shared_ptr<VModuleBase> module);
+		void _init(std::shared_ptr<VModuleBase> main_module, u16 index);
+		u8 _keep_byte_by_ip();
 
-
-		VStack _stack;
+		std::shared_ptr<VModuleBase> __main_module;
 		std::map<std::string, u16> _module_name_map;
 		std::vector<std::shared_ptr<VModuleBase>> _modules;
 		std::map<u16, std::map<u16, u16>> _module_map;
@@ -48,22 +60,10 @@ namespace mtr
 		std::stack<u32> _ip_call_stack;
 		std::stack<u16> _module_call_stack;
 		std::stack<u32> _function_call_stack;
-
-		std::shared_ptr<VModuleBase> _current_module;
-		u16 _current_module_id;
-		u32 _current_function_id;
-		u32 _ip;
-
+		
 		std::shared_ptr<u8> _bytecode;
 
-		std::stack<u8> _operands;
-
-		u8 _keep_byte_by_ip();
-
 		bool _stoped;
-
-	protected:
-		void init(std::shared_ptr<VModuleBase> main_module, u16 index);
 	};
 }
 

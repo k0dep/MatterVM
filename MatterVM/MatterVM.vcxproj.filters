@@ -30,9 +30,6 @@
     <ClInclude Include="include\mtr\ModuleLoader.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="include\mtr\SCommandList.h">
-      <Filter>Заголовочные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="include\mtr\VMachine.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
@@ -66,9 +63,6 @@
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="src\VStack.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SCommandList.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
     <ClCompile Include="src\ModuleLoader.cpp">

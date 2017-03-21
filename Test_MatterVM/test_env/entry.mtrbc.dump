@@ -1,0 +1,10 @@
+[header] MN:19757; I:1; F:1; B:0; W:0; DW:2; C:0
+[import] IND:1, NL:2, NAME`m1ýýýýa`
+[function] BCL:19
+DUMP:
+ 12 00 00 00 00 12 00 00
+ 00 01 04 01 00 01 00 00
+ 00 01 02
+[values] DUMP:
+ 00 00 00 01
+ 00 00 00 02

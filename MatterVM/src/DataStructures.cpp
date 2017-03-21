@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <stdexcept>
 #include <mtr/DataStructures.h>
 
@@ -34,6 +36,28 @@ size_t mtr::DataTypes::SHeader::allValuesSize() const
 	return CountVarBytes + (CountVarWords * 2) + (CountVarQWords * 4);
 }
 
+std::string mtr::DataTypes::SHeader::str() const
+{
+	char buf[256];
+	sprintf(buf, "[header] MN:%d; I:%d; F:%d; B:%d; W:%d; DW:%d; C:%d\n",
+		MagicNumber,
+		CountImports,
+		CountFunctions,
+		CountVarBytes,
+		CountVarWords,
+		CountVarQWords,
+		CountVarCustoms);
+	return buf;
+}
+
+
+std::string mtr::DataTypes::SImportStructure::str() const
+{
+	char buf[256];
+	auto name = string(Name.get(), NameLength);
+	sprintf(buf, "[import] IND:%d, NL:%d, NAME`%s`\n", Index, NameLength, (char*)(Name.get()));
+	return buf;
+}
 
 shared_ptr<SImportStructure> mtr::DataTypes::SImportStructure::read(FILE *file)
 {
@@ -58,6 +82,20 @@ shared_ptr<SImportStructure> mtr::DataTypes::SImportStructure::read(FILE *file)
 
 
 
+std::string mtr::DataTypes::SFunctionStructure::str() const
+{
+	char buf[4096];
+	sprintf(buf, "[function] BCL:%d\nDUMP:\n", BytecodeLength);
+	for (size_t i = 0; i < BytecodeLength; i++)
+	{
+		if (i % 8 == 0 && i != 0)
+			sprintf(buf, "%s\n", buf);
+		sprintf(buf, "%s %02x", buf, (Bytecode.get())[i] & 0xFF);
+	}
+	sprintf(buf, "%s\n", buf);
+	return buf;
+}
+
 shared_ptr<SFunctionStructure> mtr::DataTypes::SFunctionStructure::read(FILE *file)
 {
 	if (file == nullptr) throw invalid_argument("file must not be null");
@@ -78,6 +116,16 @@ shared_ptr<SFunctionStructure> mtr::DataTypes::SFunctionStructure::read(FILE *fi
 
 
 
+
+std::string mtr::DataTypes::STypeStructure::str() const
+{
+	char buf[512];
+	sprintf(buf, "[type] LEN:%d VAL:", Length);
+	for (size_t i = 0; i < Length; i++)
+		sprintf(buf, "%s %02x", buf, (Array.get())[i] & 0xFF);
+	sprintf(buf, "%s\n", buf);
+	return buf;
+}
 
 shared_ptr<STypeStructure> mtr::DataTypes::STypeStructure::read(FILE *file)
 {
@@ -124,7 +172,7 @@ void mtr::DataTypes::SFileStructure::byteValue(u32 index, u8 newValue)
 u16 mtr::DataTypes::SFileStructure::wordValue(u32 index) const
 {
 	auto baseAddr = Head->CountVarBytes + (index * 2);
-	return ((u16)(ArrValues.get())[baseAddr] << 8) + (u16)(ArrValues.get())[baseAddr+1];
+	return ((u16)(ArrValues.get())[baseAddr] << 8) | (u16)(ArrValues.get())[baseAddr+1];
 }
 
 void mtr::DataTypes::SFileStructure::wordValue(u32 index, u16 newValue)
@@ -136,11 +184,25 @@ void mtr::DataTypes::SFileStructure::wordValue(u32 index, u16 newValue)
 
 u32 mtr::DataTypes::SFileStructure::qwordValue(u32 index) const
 {
-	auto baseAddr = Head->CountVarBytes + (Head->CountVarWords * 2) + (index * 4);
-	return ((u32)(ArrValues.get())[baseAddr] << 24)
-		+ ((u32)(ArrValues.get())[baseAddr + 1] << 16)
-		+ ((u32)(ArrValues.get())[baseAddr + 2] << 8)
-		+ (u32)(ArrValues.get())[baseAddr + 3];
+	//auto baseAddr = Head->CountVarBytes + (Head->CountVarWords * 2) + (index * 4);
+
+	union
+	{
+		u32 u;
+		u8 uu[4];
+	} val;
+
+	val.u = ((u32*)(ArrValues.get()))[index];
+
+	u8 t1 = val.uu[0];
+	u8 t2 = val.uu[1];
+
+	val.uu[0] = val.uu[3];
+	val.uu[1] = val.uu[2];
+	val.uu[2] = t2;
+	val.uu[3] = t1;
+
+	return val.u;
 }
 
 void mtr::DataTypes::SFileStructure::qwordValue(u32 index, u32 newValue)
@@ -150,6 +212,37 @@ void mtr::DataTypes::SFileStructure::qwordValue(u32 index, u32 newValue)
 	(ArrValues.get())[baseAddr + 1] = (u8)((newValue >> 16) & 0xFF);
 	(ArrValues.get())[baseAddr + 2] = (u8)((newValue >> 8) & 0xFF);
 	(ArrValues.get())[baseAddr + 3] = (u8)(newValue & 0xFF);
+}
+std::string mtr::DataTypes::SFileStructure::str() const
+{
+	string res = Head->str();
+	for each (auto imp in ArrImports)
+	{
+		res += imp->str();
+	}
+
+	for each (auto imp in ArrFunctions)
+	{
+		res += imp->str();
+	}
+
+	res += "[values] DUMP:\n";
+	for (size_t i = 0; i < Head->allValuesSize(); i++)
+	{
+		char byt[4];
+		if (i % 4 == 0 && i != 0)
+			res += "\n";
+		sprintf(byt, " %02x", (ArrValues.get())[i] & 0xFF);
+		res += byt;
+	}
+	res += "\n";
+
+	for each (auto var in ArrCustomValues)
+	{
+		res += var->str();
+	}
+
+	return res;
 }
 //===================================================================================//
 
@@ -266,22 +359,28 @@ u32 mtr::DataTypes::DataHelper::make_32(std::stack<u8> &stack)
 
 f mtr::DataTypes::DataHelper::make_f(std::stack<u8> &stack)
 {
-	f res;
-	u8 b0, b1, b2, b3;
-	
-	b0 = stack.top();
-	stack.pop();
+	return utof(make_32(stack));
+}
 
-	b1 = stack.top();
-	stack.pop();
+f mtr::DataTypes::DataHelper::utof(u32 u)
+{
+	union {
+		float f_val;
+		u32 u_val;
+	} val;
 
-	b2 = stack.top();
-	stack.pop();
+	val.u_val = u;
 
-	b3 = stack.top();
-	stack.pop();
+	return val.f_val;
+}
 
-	u8 buf[] = { b0, b1, b2, b3 };
-	memcpy(&res, buf, sizeof(res));
-	return res;
+u8 mtr::DataTypes::DataHelper::byteFromFloat(float val, u8 byte_i)
+{
+	union {
+		float float_variable;
+		u8 temp_array[4];
+	} u;
+
+	u.float_variable = val;
+	return u.temp_array[byte_i];
 }
